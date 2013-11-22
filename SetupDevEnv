@@ -1,0 +1,61 @@
+# Below script can be put into .bashrc, which is used to initiate dev environment.
+# Normally we just need to change DEV_ENV which is the root path for dev environment
+
+DEV_ENV=/cygdrive/w
+JAVA_DIR=$DEV_ENV/JavaPlatform
+export DEV_ENV
+
+echo "Dev Env is set to $DEV_ENV"
+
+JAVA_HOME=$JAVA_DIR/jdk1.6.0_45
+JRE_HOME=$JAVA_HOME/jre
+MVN_HOME=$JAVA_DIR/apache-maven-3.0.5 
+MAVEN2_HOME=$MVN_HOME
+MYSQL_HOME="/cygdrive/c/Program Files/MySQL/MySQL Cluster 7.3"
+
+echo "JAVA_HOME is set to $JAVA_HOME"
+echo "JRE_HOME is set to $JRE_HOME"
+echo "MVN_HOME is set to $MVN_HOME"
+echo "MAVEN2_HOME is set to $MAVEN2_HOME"
+echo "MYSQL_HOME is set to $MYSQL_HOME"
+echo "================"
+
+function isExist()  
+{  
+    source_str=$1   
+    test_str=$2  
+	#arrStr=$(echo $source_str | tr ":" "\n")
+	#arrStr=($source_str)
+	echo "=== source_str is $source_str"
+	echo "*** test_str is $test_str"
+	
+	 while IFS=':' read -ra arrStr; do
+      for str in "${arrStr[@]}"; do
+        echo ">>> splited str is $str"
+        if [ "$test_str" = "$str" ]; then  	
+			return 0  
+        fi    
+      done
+	done <<< "$source_str"
+	
+    return 1  
+}
+  
+function setPath()
+{
+	target_path=$1
+	
+	if isExist "$PATH" "$target_path"; then
+		echo "$target_path has been set"
+	else
+		PATH="$target_path":$PATH
+	fi
+	
+}
+
+setPath "$JAVA_HOME/bin"
+setPath "$JRE_HOME/bin"
+setPath "$MVN_HOME/bin"
+setPath "$MYSQL_HOME/bin"
+echo $PATH
+export PATH
